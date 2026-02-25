@@ -42,7 +42,7 @@ C:.
 │  │
 │  └─lib
 │      └─arm64
-│              libAppIron-Suite.so
+│              libAppIron-Suite.so -
 │              libcardioDecider.so
 │              libcardioRecognizer.so
 │              libcardioRecognizer_tegra2.so
@@ -193,7 +193,80 @@ mVaccine은 초기 검증
 
 
 다른 방식으로는 
-Magisk 환경 시 Shamiko + MagiskGide Props Config 조합으로 가야함 
+Magisk 환경 시 Shamiko + MagiskGide Props Config 조합으로 가야 함 
 
 
 https://wikidocs.net/blog/@chubbyarnold/7992/
+
+
+https://github.com/Genymobile/scrcpy/releases/tag/v3.3.4
+ㄴ Android 폰 미러링 도구 
+![[Pasted image 20260225101143.png]]
+
+
+![[Pasted image 20260225171449.png]]
+
+
+- **핵심 함수**: `FUN_00164388` (AppIron 핵심 탐지 함수)
+- **난독화 방식**: XOR 인코딩 (`결과값 = 원본값 ^ 키`)
+
+---
+
+## 복호화된 문자열 목록
+
+| 결과 주소      | 복호화된 문자열                          | 의미           |
+| ---------- | --------------------------------- | ------------ |
+| `002338c1` | `activate`                        | 라이선스 활성화     |
+| `002338d4` | `logType`                         | 로그 타입        |
+| `00233900` | `parse policy data error`         | 정책 파싱 에러 메시지 |
+| `00233924` | `index`                           | 인덱스          |
+| `00233938` | `emulator`                        | 에뮬레이터 탐지     |
+| `00233950` | `blackApp`                        | 앱 블랙리스트 탐지   |
+| `00233964` | `magisk`                          | Magisk 탐지    |
+| `00233974` | `remote`                          | 원격 연결 탐지     |
+| `00233988` | `integrity`                       | 무결성 검증       |
+| `002339a0` | `SignerHash`                      | 앱 서명 해시 검증   |
+| `002339b8` | `detected`                        | 탐지 결과 문자열    |
+| `002339c8` | `all`                             | 전체           |
+| `002339d4` | `policy`                          | 정책           |
+| `00233a10` | `parse policy data error[policy]` | 에러 포맷 문자열    |
+| `00233a3c` | `android`                         | 안드로이드        |
+| `00233a70` | `nativeMemoryCheck`               | 네이티브 메모리 검사  |
+| `00233a8c` | `detect`                          | 탐지           |
+| `00233aa0` | `killSwitch`                      | 원격 킬스위치      |
+| `00233abc` | `includeDetail`                   | 상세 로그 포함 여부  |
+| `00233ad8` | `detectType`                      | 탐지 타입        |
+
+---
+
+## 핵심 탐지 항목
+
+| 탐지 항목               | 주소         | 설명             |
+| ------------------- | ---------- | -------------- |
+| `magisk`            | `00233964` | Magisk 루팅 탐지   |
+| `emulator`          | `00233938` | 에뮬레이터 환경 탐지    |
+| `blackApp`          | `00233950` | 블랙리스트 앱 탐지     |
+| `SignerHash`        | `002339a0` | 앱 서명 무결성 검증    |
+| `integrity`         | `00233988` | 앱 무결성 검증       |
+| `nativeMemoryCheck` | `00233a70` | 네이티브 메모리 변조 탐지 |
+| `killSwitch`        | `00233aa0` | 서버 기반 원격 종료    |
+
+
+---
+
+## 분석 메모
+
+- `FUN_00164388` 단일 함수에 탐지 문자열이 집중 → 해당 함수가 AppIron 핵심 탐지 로직
+- `killSwitch` 존재 → 서버 통신으로 원격 앱 강제 종료 가능
+- `SignerHash` 존재 → 리패키징 시 서명 검증으로 탐지될 가능성
+- `magisk` 문자열 존재 → Magisk 환경에서 Shamiko 없이는 탐지됨
+
+---
+
+## 다음 분석 방향
+
+1. Ghidra에서 `FUN_00164388` (오프셋 `0x164388`) 분석
+2. 각 탐지 문자열 XREF 추적 → 탐지 로직 흐름 파악
+3. `killSwitch` 관련 서버 통신 엔드포인트 확인
+4. `SignerHash` 검증 로직 → 리패키징 우회 가능 여부 판단
+5. 검증 로직 확인
