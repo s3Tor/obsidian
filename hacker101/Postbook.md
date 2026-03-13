@@ -56,4 +56,8 @@ Step 2. User계정으로 로그인 시도
 Step 3. 요청 패킷 확인 시 Password 파라미터에 brute-force로 계정 패스워드 확인
 <img width="1456" height="1038" alt="image" src="https://github.com/user-attachments/assets/aea04eb8-2890-444d-814f-3ba6f056cd04" />
 
+ Step 4. user패스워드는 "passowrd"이고 다음 패킷에서 flag값 확인 가능
+ <img width="1487" height="474" alt="image" src="https://github.com/user-attachments/assets/8d58396b-2883-4a2e-8465-6cbea7254efe" />
+
+
 
