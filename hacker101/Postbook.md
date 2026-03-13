@@ -15,4 +15,18 @@ Step 4. "di=5 -> di=1"로 URL 변조 시도
 Step 5. 저장 시 flag값 획득 가능함
 <img width="1196" height="612" alt="image" src="https://github.com/user-attachments/assets/9e7dc065-de9c-4eb9-b8f0-ce35aa4af97e" />
 
+## Postbook 1-2
+
+Step 1. 로그인 후 "Post timeline" 메뉴에 임의의 값 넣고 'Create post'버튼 클릭 
+<img width="1107" height="1055" alt="image" src="https://github.com/user-attachments/assets/3b53bd2f-b481-4b00-bbd7-041049909173" />
+
+Step 2. 요청 패킷 확인 시 파라미터 내 ID 값 확인가능
+- user_id = 3 > user_id = 1로 변경
+<img width="1487" height="993" alt="image" src="https://github.com/user-attachments/assets/0d71ecc3-41b1-4999-bdb8-937ad06c6a75" />
+
+Step 3. 응답 패킷 내 flag 내용 확인 가능
+<img width="1485" height="867" alt="image" src="https://github.com/user-attachments/assets/e2d22193-ee44-4353-95b9-b7c4ee3f7bc2" />
+
+
+
 
